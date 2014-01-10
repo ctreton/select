@@ -6,13 +6,10 @@
 /*   By: ctreton <ctreton@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/01/03 23:06:06 by ctreton           #+#    #+#             */
-/*   Updated: 2014/01/08 05:50:39 by ctreton          ###   ########.fr       */
+/*   Updated: 2014/01/10 20:04:30 by ctreton          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <signal.h>
-#include "libft/libft.h"
 #include "select.h"
 
 int					main(int ac, char **av)

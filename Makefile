@@ -6,7 +6,7 @@
 #    By: ctreton <corentintreton@gmail.com>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2013/07/29 22:50:43 by ctreton           #+#    #+#              #
-#    Updated: 2014/01/05 11:20:51 by ctreton          ###   ########.fr        #
+#    Updated: 2014/01/10 20:35:48 by ctreton          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,3 +46,5 @@ re: fclean all
 
 swag: re
 	@make clean
+
+.PHONY: all clean fclean re

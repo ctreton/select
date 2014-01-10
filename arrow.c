@@ -6,12 +6,11 @@
 /*   By: ctreton <ctreton@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/01/05 10:05:15 by ctreton           #+#    #+#             */
-/*   Updated: 2014/01/08 02:27:02 by ctreton          ###   ########.fr       */
+/*   Updated: 2014/01/10 20:17:47 by ctreton          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "select.h"
-#include <stdlib.h>
 
 void		move_cur(char *cr)
 {
@@ -57,18 +56,16 @@ void		move_l(char *cr)
 	{
 		if (e->x == 0)
 		{
-			if (end->y < e->y)
-				i--;
+			i = ((end->y < e->y) ? (i - 1) : i);
 			while (!((e->x == i) && (e->y == cur->y)))
 				e = e->next;
-			g_all.c.cur = e;
 		}
 		else
 		{
 			while (!((e->x == (cur->x - 1)) && (e->y == cur->y)))
 				e = e->prev;
-			g_all.c.cur = e;
 		}
+		g_all.c.cur = e;
 	}
 	move_r(cr);
 }

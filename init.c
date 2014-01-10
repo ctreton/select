@@ -6,19 +6,15 @@
 /*   By: ctreton <ctreton@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/01/05 10:14:44 by ctreton           #+#    #+#             */
-/*   Updated: 2014/01/08 03:41:46 by ctreton          ###   ########.fr       */
+/*   Updated: 2014/01/10 20:09:35 by ctreton          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <fcntl.h>
-#include <stdlib.h>
 #include "select.h"
-#include "libft/libft.h"
 
 int			init_fd(int fd)
 {
-	fd = 1;
-//	fd = open("/dev/tty", O_RDWR | O_NONBLOCK);
+	fd = open(ttyname(fd), O_RDWR | O_NONBLOCK);
 	return (fd);
 }
 

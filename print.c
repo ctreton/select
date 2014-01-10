@@ -6,27 +6,29 @@
 /*   By: ctreton <ctreton@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/01/05 10:08:51 by ctreton           #+#    #+#             */
-/*   Updated: 2014/01/08 02:34:13 by ctreton          ###   ########.fr       */
+/*   Updated: 2014/01/10 20:27:14 by ctreton          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include <sys/ioctl.h>
-#include <termcap.h>
 #include "select.h"
-#include "libft/libft.h"
 
-void		print_arg(int fd)
+void				print_arg(int fd)
 {
-	t_elem	*e;
-	int		step;
+	t_elem			*e;
+	struct ttysize	ts;
 
 	e = g_all.c.start;
-	step = count_max();
+	ioctl(0, TIOCGSIZE, &ts);
 	tputs(tgetstr("cl", NULL), 1, ft_tputs);
 	while (e)
 	{
-		tputs(tgoto(tgetstr("cm", NULL), (e->x * step), e->y), 1, ft_tputs);
+		if ((e->pos_x + ft_strlen(e->value)) > ts.ts_cols)
+		{
+			tputs(tgoto(tgetstr("cl", NULL), e->pos_x, e->y), 1, ft_tputs);
+			ft_putstr_fd("pas assez de place", fd);
+			return ;
+		}
+		tputs(tgoto(tgetstr("cm", NULL), e->pos_x, e->y), 1, ft_tputs);
 		if (e == g_all.c.cur)
 			tputs(tgetstr("us", NULL), 1, ft_tputs);
 		if (e->sel == 1)
@@ -38,10 +40,10 @@ void		print_arg(int fd)
 	}
 }
 
-void		set_coor(void)
+void				set_coor(void)
 {
-	int		i;
-	t_elem	*e;
+	int				i;
+	t_elem			*e;
 	struct ttysize	ts;
 
 	i = 0;
@@ -51,15 +53,17 @@ void		set_coor(void)
 	{
 		e->y = (i % ts.ts_lines);
 		e->x = (i / ts.ts_lines);
+		e->pos_x = calc_x(ts.ts_lines, e->x, e);
 		i++;
 		e = e->next;
 	}
 }
 
-void		end_verif(char *cr, int fd)
+void				end_verif(char *cr, int fd)
 {
-	t_elem	*e;
+	t_elem			*e;
 
+	fd = 1;
 	if (cr[0] == 10 && cr[1] == 0 && cr[2] == 0)
 	{
 		e = g_all.c.start;
@@ -77,39 +81,40 @@ void		end_verif(char *cr, int fd)
 	}
 }
 
-void		del_arg(char *cr)
+void				del_arg(char *cr)
 {
-	t_elem	*e;
-	t_elem	*prev;
-	t_elem	*next;
+	t_elem			*e;
 
 	e = g_all.c.cur;
 	if ((cr[0] == 126 || cr[0] == 127) && cr[1] == 0 && cr[2] == 0)
 	{
-		next = e->next;
-		prev = e->prev;
-		if (e == g_all.c.start && e == g_all.c.end)
-			print_error(3);
-		if (e == g_all.c.start)
-		{
-			next->prev = NULL;
-			g_all.c.start = next;
-			g_all.c.cur = next;
-		}
-		else if (e == g_all.c.end)
-		{
-			prev->next = NULL;
-			g_all.c.end = prev;
-			g_all.c.cur = prev;
-		}
-		else
-		{
-			prev->next = next;
-			next->prev = prev;
-			g_all.c.cur = next;
-		}
+		del_arg2(e);
 		free(e);
 		e = NULL;
 		set_coor();
+	}
+}
+
+void				del_arg2(t_elem *e)
+{
+	if (e == g_all.c.start && e == g_all.c.end)
+		print_error(3);
+	if (e == g_all.c.start)
+	{
+		(e->next)->prev = NULL;
+		g_all.c.start = e->next;
+		g_all.c.cur = e->next;
+	}
+	else if (e == g_all.c.end)
+	{
+		(e->prev)->next = NULL;
+		g_all.c.end = e->prev;
+		g_all.c.cur = e->prev;
+	}
+	else
+	{
+		(e->prev)->next = e->next;
+		(e->next)->prev = e->prev;
+		g_all.c.cur = e->next;
 	}
 }
